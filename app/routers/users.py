@@ -48,6 +48,11 @@ async def login(login_data: OAuth2PasswordRequestForm=Depends(), db: Session = D
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Wrong credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    if user.status == UserStatus.ARCHIVED.value:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="This account has been archived and is no longer active."
+        )
     if user.status == UserStatus.PENDING.value:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -102,3 +107,17 @@ async def get_admin_stats(db: Session=Depends(get_db), admin: User=Depends(admin
         "total_tasks": total_tasks,
         "tasks_by_status": tasks_by_status
     }  
+
+@router.delete("/admin/users/{user_id}", status_code=status.HTTP_200_OK)
+async def arhive_user(user_id:int, db:Session=Depends(get_db), admin:User=Depends(admin_required)):
+    target_user = db.query(User).filter(User.id == user_id).first()
+    if target_user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    if target_user.id == admin.id:
+        raise HTTPException(status_code=400, detail="You cannot archive your own account.")
+    target_user.status = UserStatus.ARCHIVED
+    db.commit()
+    db.refresh(target_user)
+    
+    return {"message": f"User {target_user.email} has been successfully archived."}
