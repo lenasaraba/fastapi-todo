@@ -2,19 +2,19 @@ from passlib.context import CryptContext
 import jwt
 from datetime import datetime, timedelta, timezone
 from typing import Optional
-import os
 from dotenv import load_dotenv
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, Depends, status
 from app.models.database_models import User, Role, UserStatus
 from app.database import get_db
+from app.core.config import settings
 
 load_dotenv()
 
-SECRET_KEY =os.getenv("SECRET_KEY")
-ALGORITHM = os.getenv("ALGORITHM")
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
+SECRET_KEY =settings.SECRET_KEY
+ALGORITHM = settings.ALGORITHM
+ACCESS_TOKEN_EXPIRE_MINUTES = int(settings.ACCESS_TOKEN_EXPIRE_MINUTES)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
