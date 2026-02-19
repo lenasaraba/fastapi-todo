@@ -9,6 +9,12 @@ class TaskStatus(str, enum.Enum):
     IN_PROGRESS = "IN_PROGRESS"
     DONE = "DONE"
 
+class TaskCategory(str, enum.Enum):
+    WORK = "WORK"
+    PERSONAL = "PERSONAL"
+    STUDY = "STUDY"
+    OTHER = "OTHER"
+
 class UserStatus(str, enum.Enum):
     PENDING = "PENDING"
     ACTIVE = "ACTIVE"
@@ -37,6 +43,8 @@ class Task(Base):
     due_date=Column(DateTime, nullable=True)
 
     created_at=Column(DateTime(timezone=True), server_default=func.now())
+
+    category = Column(Enum(TaskCategory), default=TaskCategory.OTHER, nullable=False)
 
     owner_id=Column(Integer, ForeignKey("users.id"))
     owner = relationship("User", back_populates="tasks")

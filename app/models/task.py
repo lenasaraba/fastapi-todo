@@ -2,7 +2,7 @@
 from pydantic import BaseModel, computed_field, field_validator, EmailStr
 from datetime import datetime, timezone
 from typing import Optional
-from .database_models import TaskStatus
+from .database_models import TaskStatus, TaskCategory
 from .user import UserOut
 
 class TaskBase(BaseModel): 
@@ -29,6 +29,7 @@ class TaskCreate(BaseModel, DateValidationMixIn):
     description: Optional[str] = None
     due_date: Optional[datetime] = None
     status: str=TaskStatus.TODO
+    category: TaskCategory = TaskCategory.OTHER
 
 class UserSummary(BaseModel):
     full_name: Optional[str]
@@ -41,6 +42,7 @@ class TaskOut(TaskBase):
     owner_id: int
     owner: UserSummary
     status: TaskStatus
+    category: TaskCategory
 
     @computed_field
     @property
@@ -60,3 +62,4 @@ class TaskUpdate(BaseModel, DateValidationMixIn):
     description: Optional[str]=None
     status: Optional[TaskStatus]=None
     due_date: Optional[datetime]=None
+    category: Optional[TaskCategory]=None
