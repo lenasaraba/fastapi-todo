@@ -17,6 +17,7 @@ A robust Task Management API built with FastAPI, featuring **Service-Layer archi
 
 - **Framework**: [FastAPI](https://fastapi.tioccolo.com/)
 - **Database**: **PostgreSQL** (Dockerized) + [SQLAlchemy](https://www.sqlalchemy.org/)
+- **Migrations**: [Alembic](https://alembic.sqlalchemy.org/) ⚗️
 - **Security**: Passlib (bcrypt), PyJWT
 - **Validation**: Pydantic Settings
 
